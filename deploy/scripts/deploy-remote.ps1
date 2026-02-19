@@ -47,7 +47,13 @@ corepack enable
 corepack pnpm install --frozen-lockfile
 corepack pnpm --filter @lexnexus/db generate
 corepack pnpm --filter @lexnexus/db exec prisma migrate deploy --schema prisma/schema.prisma
-corepack pnpm build
+corepack pnpm --filter @lexnexus/api build
+corepack pnpm --filter @lexnexus/web build
+
+if [ ! -f apps/api/dist/server.js ]; then
+  echo "Build da API não gerou apps/api/dist/server.js"
+  exit 1
+fi
 
 pm2 startOrReload deploy/pm2/ecosystem.config.cjs
 pm2 save
