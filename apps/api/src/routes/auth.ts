@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { prisma, Role } from "@lexnexus/db";
 import { loginSchema, registerSchema } from "@lexnexus/shared";
 import { sendValidationError } from "../utils/http.js";

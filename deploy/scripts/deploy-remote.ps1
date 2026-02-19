@@ -50,7 +50,7 @@ corepack pnpm --filter @lexnexus/db exec prisma migrate deploy --schema prisma/s
 corepack pnpm --filter @lexnexus/api build
 corepack pnpm --filter @lexnexus/web build
 
-if [ ! -f apps/api/dist/server.js ]; then
+if [ ! -f apps/api/dist/server.js ] && [ ! -f apps/api/dist/apps/api/src/server.js ]; then
   echo "Build da API não gerou apps/api/dist/server.js"
   exit 1
 fi

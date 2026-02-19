@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
+    "start": "node -e \"const fs=require('fs');const {spawnSync}=require('child_process');const candidates=['dist/server.js','dist/apps/api/src/server.js'];const entry=candidates.find((p)=>fs.existsSync(p));if(!entry){console.error('API build artifact not found.');process.exit(1);}const r=spawnSync(process.execPath,[entry],{stdio:'inherit'});process.exit(r.status??1);\"",
     "lint": "echo \"lint pending\"",
     "format": "echo \"format pending\""
   },
@@ -18,14 +18,14 @@
     "@fastify/multipart": "^9.2.1",
     "@lexnexus/db": "workspace:*",
     "@lexnexus/shared": "workspace:*",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "fastify": "^5.5.0",
     "fastify-plugin": "^5.0.1",
     "pino": "^9.9.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.13.14",
     "pino-pretty": "^13.1.1",
     "tsx": "^4.20.4",
