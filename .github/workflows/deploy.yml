@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: corepack pnpm install --frozen-lockfile
 
+      - name: Generate Prisma Client
+        run: corepack pnpm --filter @lexnexus/db generate
+
       - name: Build validation
         run: corepack pnpm -r build
 
