@@ -1,0 +1,69 @@
+name: Deploy Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build validation
+        run: pnpm -r build
+
+      - name: Deploy on Droplet via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            APP_DIR="${{ secrets.APP_DIR }}"
+            DEPLOY_BRANCH="${{ secrets.DEPLOY_BRANCH }}"
+
+            if [ -z "$APP_DIR" ]; then
+              APP_DIR="/var/www/lexnexus"
+            fi
+
+            if [ -z "$DEPLOY_BRANCH" ]; then
+              DEPLOY_BRANCH="main"
+            fi
+
+            cd "$APP_DIR"
+            git fetch --all
+            git checkout "$DEPLOY_BRANCH"
+            git pull origin "$DEPLOY_BRANCH"
+            corepack enable
+            corepack pnpm install --frozen-lockfile
+            corepack pnpm --filter @lexnexus/db generate
+            corepack pnpm db:migrate
+            corepack pnpm build
+            pm2 startOrReload deploy/pm2/ecosystem.config.cjs
+            pm2 save
+            sudo nginx -t
+            sudo systemctl reload nginx

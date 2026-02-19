@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  student
+}
+
+enum AnnotationType {
+  highlight
+  note
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+enum FlashcardSourceType {
+  manual
+  wrong_question
+  annotation
+}
+
+enum FlashcardRating {
+  easy
+  medium
+  hard
+}
+
+model User {
+  id             String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  email          String              @unique
+  passwordHash   String              @map("password_hash")
+  role           Role                @default(student)
+  createdAt      DateTime            @default(now()) @map("created_at")
+  subscriptions  Subscription[]
+  userDocStates  UserDocumentState[]
+  annotations    Annotation[]
+  bookmarks      Bookmark[]
+  studySessions  StudySession[]
+  clickEvents    ClickEvent[]
+  userAnswers    UserAnswer[]
+  performance    PerformanceStat[]
+  studyPlans     StudyPlan[]
+  flashcards     Flashcard[]
+
+  @@map("users")
+}
+
+model Subscription {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  plan      String
+  status    String
+  startedAt DateTime @default(now()) @map("started_at")
+  expiresAt DateTime @map("expires_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model Discipline {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String            @unique
+  documents        Document[]
+  questions        Question[]
+  performanceStats PerformanceStat[]
+  studyTasks       StudyTask[]
+  flashcards       Flashcard[]
+
+  @@map("disciplines")
+}
+
+model Document {
+  id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  disciplineId String            @map("discipline_id") @db.Uuid
+  description  String?
+  discipline   Discipline        @relation(fields: [disciplineId], references: [id], onDelete: Restrict)
+  versions     DocumentVersion[]
+
+  @@index([disciplineId])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  documentId        String              @map("document_id") @db.Uuid
+  versionNumber     Int                 @map("version_number")
+  isCurrent         Boolean             @default(false) @map("is_current")
+  blobUrl           String              @map("blob_url")
+  fileHash          String              @map("file_hash")
+  changelog         String?
+  publishedAt       DateTime            @default(now()) @map("published_at")
+  document          Document            @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userDocStates     UserDocumentState[]
+  annotations       Annotation[]
+  bookmarks         Bookmark[]
+  studySessions     StudySession[]
+  clickEvents       ClickEvent[]
+
+  @@unique([documentId, versionNumber])
+  @@index([documentId, isCurrent])
+  @@map("document_versions")
+}
+
+model UserDocumentState {
+  userId            String          @map("user_id") @db.Uuid
+  documentVersionId String          @map("document_version_id") @db.Uuid
+  lastPage          Int             @default(1) @map("last_page")
+  percentCompleted  Float           @default(0) @map("percent_completed")
+  lastSeenAt        DateTime        @default(now()) @map("last_seen_at")
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, documentVersionId])
+  @@index([userId])
+  @@index([documentVersionId])
+  @@map("user_document_state")
+}
+
+model Annotation {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String          @map("user_id") @db.Uuid
+  documentVersionId String          @map("document_version_id") @db.Uuid
+  page              Int
+  type              AnnotationType
+  rects             Json?
+  noteText          String?         @map("note_text")
+  color             String?
+  createdAt         DateTime        @default(now()) @map("created_at")
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, documentVersionId])
+  @@map("annotations")
+}
+
+model Bookmark {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String          @map("user_id") @db.Uuid
+  documentVersionId String          @map("document_version_id") @db.Uuid
+  page              Int
+  label             String
+  createdAt         DateTime        @default(now()) @map("created_at")
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, documentVersionId])
+  @@map("bookmarks")
+}
+
+model StudySession {
+  id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String           @map("user_id") @db.Uuid
+  documentVersionId String?          @map("document_version_id") @db.Uuid
+  startedAt         DateTime         @map("started_at")
+  endedAt           DateTime         @map("ended_at")
+  durationSeconds   Int              @map("duration_seconds")
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentVersion   DocumentVersion? @relation(fields: [documentVersionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, startedAt])
+  @@index([documentVersionId])
+  @@map("study_sessions")
+}
+
+model ClickEvent {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String          @map("user_id") @db.Uuid
+  documentVersionId String          @map("document_version_id") @db.Uuid
+  term              String
+  context           String?
+  createdAt         DateTime        @default(now()) @map("created_at")
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, documentVersionId])
+  @@map("click_events")
+}
+
+model Question {
+  id            String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  disciplineId  String            @map("discipline_id") @db.Uuid
+  banca         String
+  year          Int
+  statement     String
+  correctOption String            @map("correct_option")
+  difficulty    Difficulty
+  createdAt     DateTime          @default(now()) @map("created_at")
+  discipline    Discipline        @relation(fields: [disciplineId], references: [id], onDelete: Restrict)
+  options       QuestionOption[]
+  userAnswers   UserAnswer[]
+
+  @@index([disciplineId, banca, year, difficulty])
+  @@index([year])
+  @@map("questions")
+}
+
+model QuestionOption {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  questionId   String   @map("question_id") @db.Uuid
+  optionLetter String   @map("option_letter")
+  content      String
+  question     Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, optionLetter])
+  @@index([questionId])
+  @@map("question_options")
+}
+
+model UserAnswer {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  questionId     String   @map("question_id") @db.Uuid
+  selectedOption String   @map("selected_option")
+  isCorrect      Boolean  @map("is_correct")
+  answeredAt     DateTime @default(now()) @map("answered_at")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question       Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, answeredAt])
+  @@index([questionId])
+  @@map("user_answers")
+}
+
+model PerformanceStat {
+  userId         String     @map("user_id") @db.Uuid
+  disciplineId   String     @map("discipline_id") @db.Uuid
+  totalQuestions Int        @default(0) @map("total_questions")
+  correctAnswers Int        @default(0) @map("correct_answers")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discipline     Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  @@id([userId, disciplineId])
+  @@index([userId])
+  @@index([disciplineId])
+  @@map("performance_stats")
+}
+
+model StudyPlan {
+  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String      @map("user_id") @db.Uuid
+  examDate   DateTime    @map("exam_date")
+  dailyHours Float       @map("daily_hours")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks      StudyTask[]
+
+  @@index([userId])
+  @@map("study_plans")
+}
+
+model StudyTask {
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  planId        String     @map("plan_id") @db.Uuid
+  disciplineId  String     @map("discipline_id") @db.Uuid
+  scheduledDate DateTime   @map("scheduled_date")
+  revisionStage Int        @map("revision_stage")
+  completed     Boolean    @default(false)
+  plan          StudyPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
+  discipline    Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  @@index([planId, scheduledDate])
+  @@index([disciplineId])
+  @@map("study_tasks")
+}
+
+model Flashcard {
+  id         String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String               @map("user_id") @db.Uuid
+  disciplineId String?            @map("discipline_id") @db.Uuid
+  front      String
+  back       String
+  sourceType FlashcardSourceType  @map("source_type")
+  sourceId   String?              @map("source_id") @db.Uuid
+  createdAt  DateTime             @default(now()) @map("created_at")
+  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discipline Discipline?          @relation(fields: [disciplineId], references: [id], onDelete: SetNull)
+  reviews    FlashcardReview[]
+
+  @@index([userId])
+  @@index([disciplineId])
+  @@map("flashcards")
+}
+
+model FlashcardReview {
+  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  flashcardId  String          @map("flashcard_id") @db.Uuid
+  reviewedAt   DateTime        @default(now()) @map("reviewed_at")
+  rating       FlashcardRating
+  nextReviewAt DateTime        @map("next_review_at")
+  flashcard    Flashcard       @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+
+  @@index([flashcardId, nextReviewAt])
+  @@map("flashcard_reviews")
+}

@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900;
+}
+
+input,
+select,
+textarea,
+button {
+  @apply rounded-md border border-slate-300 px-3 py-2;
+}
+
+button {
+  @apply bg-slate-900 text-white hover:bg-slate-700;
+}

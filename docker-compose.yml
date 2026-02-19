@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lexnexus-postgres
+    environment:
+      POSTGRES_USER: lexnexus
+      POSTGRES_PASSWORD: lexnexus
+      POSTGRES_DB: lexnexus
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
