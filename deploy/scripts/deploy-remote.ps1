@@ -38,13 +38,15 @@ set -a
 set +a
 
 git fetch --all
+git reset --hard HEAD
+git clean -fd
 git checkout '$Branch'
 git pull origin '$Branch'
 
 corepack enable
 corepack pnpm install --frozen-lockfile
 corepack pnpm --filter @lexnexus/db generate
-corepack pnpm db:migrate
+corepack pnpm --filter @lexnexus/db exec prisma migrate deploy --schema prisma/schema.prisma
 corepack pnpm build
 
 pm2 startOrReload deploy/pm2/ecosystem.config.cjs

@@ -15,6 +15,8 @@ set -euo pipefail
 cd "${PROJECT_DIR}"
 
 git fetch --all
+git reset --hard HEAD
+git clean -fd
 
 git checkout "${BRANCH}"
 
@@ -23,7 +25,7 @@ git pull origin "${BRANCH}"
 corepack enable
 corepack pnpm install --frozen-lockfile
 corepack pnpm --filter @lexnexus/db generate
-corepack pnpm db:migrate
+corepack pnpm --filter @lexnexus/db exec prisma migrate deploy --schema prisma/schema.prisma
 corepack pnpm build
 
 pm2 startOrReload deploy/pm2/ecosystem.config.cjs
