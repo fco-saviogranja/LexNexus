@@ -11,8 +11,7 @@
     "format": "echo \"format pending\""
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.896.0",
-    "@aws-sdk/s3-request-presigner": "^3.896.0",
+    "@azure/storage-blob": "^12.26.0",
     "@fastify/cors": "^11.1.0",
     "@fastify/jwt": "^10.0.0",
     "@fastify/multipart": "^9.2.1",

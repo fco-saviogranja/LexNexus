@@ -1,8 +1,39 @@
 import { FastifyInstance } from "fastify";
 import { prisma, AnnotationType } from "@lexnexus/db";
 import { annotationSchema, bookmarkSchema, userDocumentStateSchema } from "@lexnexus/shared";
-import { getSignedPdfUrl } from "../lib/s3.js";
+import { getSignedBlobUrl } from "../lib/s3.js";
 import { sendValidationError } from "../utils/http.js";
+
+function isPlaceholderAsset(blobUrl: string) {
+  return blobUrl.startsWith("https://example.com/") || blobUrl.startsWith("https://mock-storage.local/");
+}
+
+async function resolveViewerVersion(documentVersionId: string) {
+  const requestedVersion = await prisma.documentVersion.findUnique({
+    where: { id: documentVersionId },
+    include: { document: true }
+  });
+
+  if (!requestedVersion) {
+    return null;
+  }
+
+  if (!isPlaceholderAsset(requestedVersion.blobUrl)) {
+    return requestedVersion;
+  }
+
+  const currentVersion = await prisma.documentVersion.findFirst({
+    where: {
+      documentId: requestedVersion.documentId,
+      isCurrent: true,
+      id: { not: requestedVersion.id }
+    },
+    include: { document: true },
+    orderBy: { versionNumber: "desc" }
+  });
+
+  return currentVersion ?? requestedVersion;
+}
 
 export async function viewerRoutes(app: FastifyInstance) {
   app.addHook("preHandler", app.authorize(["admin", "student"]));
@@ -10,12 +41,9 @@ export async function viewerRoutes(app: FastifyInstance) {
   app.get("/viewer/:documentVersionId", async (request) => {
     const { documentVersionId } = request.params as { documentVersionId: string };
     const userId = request.user.userId;
+    const version = await resolveViewerVersion(documentVersionId);
 
-    const [version, state, annotations, bookmarks] = await Promise.all([
-      prisma.documentVersion.findUnique({
-        where: { id: documentVersionId },
-        include: { document: true }
-      }),
+    const [state, annotations, bookmarks] = await Promise.all([
       prisma.userDocumentState.findUnique({ where: { userId_documentVersionId: { userId, documentVersionId } } }),
       prisma.annotation.findMany({ where: { userId, documentVersionId }, orderBy: { createdAt: "desc" } }),
       prisma.bookmark.findMany({ where: { userId, documentVersionId }, orderBy: { createdAt: "desc" } })
@@ -26,11 +54,11 @@ export async function viewerRoutes(app: FastifyInstance) {
 
   app.get("/viewer/:documentVersionId/url", async (request) => {
     const { documentVersionId } = request.params as { documentVersionId: string };
-    const version = await prisma.documentVersion.findUnique({ where: { id: documentVersionId } });
+    const version = await resolveViewerVersion(documentVersionId);
     if (!version) {
       return { url: null };
     }
-    const url = await getSignedPdfUrl(version.blobUrl);
+    const url = await getSignedBlobUrl(version.blobUrl);
     return { url };
   });
 

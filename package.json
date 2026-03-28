@@ -9,10 +9,27 @@
     "lint": "pnpm -r lint",
     "format": "pnpm -r format",
     "db:migrate": "pnpm --filter @lexnexus/db db:migrate",
-    "db:seed": "pnpm --filter @lexnexus/db db:seed"
+    "db:seed": "pnpm --filter @lexnexus/db db:seed",
+    "deploy:api:package": "node deploy/scripts/build-api-appservice.mjs",
+    "deploy:web:package": "node deploy/scripts/build-web-appservice.mjs"
   },
   "devDependencies": {
     "concurrently": "^9.0.1",
+    "esbuild": "^0.27.0",
     "typescript": "^5.9.2"
-  }
+  },
+  "description": "Plataforma SaaS jurídico + tech para concurso/OAB/graduação em Direito.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fco-saviogranja/LexNexus.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/fco-saviogranja/LexNexus/issues"
+  },
+  "homepage": "https://github.com/fco-saviogranja/LexNexus#readme"
 }

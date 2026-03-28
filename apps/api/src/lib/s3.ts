@@ -1,68 +1,89 @@
 import { randomUUID, createHash } from "node:crypto";
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import {
+  BlobServiceClient,
+  StorageSharedKeyCredential,
+  generateBlobSASQueryParameters,
+  BlobSASPermissions,
+} from "@azure/storage-blob";
 
-const endpoint = process.env.S3_ENDPOINT;
-const region = process.env.S3_REGION ?? "us-east-1";
-const bucket = process.env.S3_BUCKET;
+const accountName = process.env.AZURE_STORAGE_ACCOUNT;
+const accountKey = process.env.AZURE_STORAGE_KEY;
+const containerName = process.env.AZURE_STORAGE_CONTAINER ?? "documents";
 
-export const hasS3Config = Boolean(endpoint && bucket && process.env.S3_ACCESS_KEY && process.env.S3_SECRET_KEY);
+export const hasStorageConfig = Boolean(accountName && accountKey);
 
-export const s3 = hasS3Config
-  ? new S3Client({
-      region,
-      endpoint,
-      forcePathStyle: false,
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY!,
-        secretAccessKey: process.env.S3_SECRET_KEY!
-      }
-    })
+const sharedKeyCred = hasStorageConfig
+  ? new StorageSharedKeyCredential(accountName!, accountKey!)
   : null;
 
-export const hashBuffer = (buffer: Buffer) => createHash("sha256").update(buffer).digest("hex");
+const blobServiceClient = hasStorageConfig
+  ? new BlobServiceClient(
+      `https://${accountName}.blob.core.windows.net`,
+      sharedKeyCred!,
+    )
+  : null;
 
-export async function uploadPdf(buffer: Buffer, fileName: string) {
-  if (!s3 || !bucket) {
+export const hashBuffer = (buffer: Buffer) =>
+  createHash("sha256").update(buffer).digest("hex");
+
+export async function uploadDocument(buffer: Buffer, fileName: string, mimeType: string) {
+  if (!blobServiceClient || !sharedKeyCred) {
     return {
       key: `mock/${randomUUID()}-${fileName}`,
-      blobUrl: `https://mock-storage.local/${fileName}`
+      blobUrl: `https://mock-storage.local/${fileName}`,
     };
   }
 
   const key = `documents/${new Date().getFullYear()}/${randomUUID()}-${fileName}`;
-  await s3.send(
-    new PutObjectCommand({
-      Bucket: bucket,
-      Key: key,
-      Body: buffer,
-      ContentType: "application/pdf"
-    })
-  );
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+  const blockBlobClient = containerClient.getBlockBlobClient(key);
 
-  const blobUrl = `${endpoint}/${bucket}/${key}`;
+  await blockBlobClient.upload(buffer, buffer.length, {
+    blobHTTPHeaders: { blobContentType: mimeType },
+  });
+
+  const blobUrl = blockBlobClient.url;
   return { key, blobUrl };
 }
 
-export async function getSignedPdfUrl(keyOrUrl: string) {
-  if (!s3 || !bucket) {
+export async function getSignedBlobUrl(keyOrUrl: string) {
+  if (keyOrUrl.startsWith("/")) {
     return keyOrUrl;
   }
 
-  const key = keyOrUrl.includes("/") && keyOrUrl.startsWith("http")
-    ? keyOrUrl.split(`/${bucket}/`)[1]
-    : keyOrUrl;
+  if (keyOrUrl.startsWith("http") && !keyOrUrl.includes(".blob.core.windows.net/")) {
+    return keyOrUrl;
+  }
+
+  if (!blobServiceClient || !sharedKeyCred) {
+    return keyOrUrl;
+  }
+
+  const key =
+    keyOrUrl.includes("/") && keyOrUrl.startsWith("http")
+      ? new URL(keyOrUrl).pathname.replace(`/${containerName}/`, "")
+      : keyOrUrl;
 
   if (!key) {
     return keyOrUrl;
   }
 
-  return getSignedUrl(
-    s3,
-    new GetObjectCommand({
-      Bucket: bucket,
-      Key: key
-    }),
-    { expiresIn: 60 * 15 }
-  );
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+  const blobClient = containerClient.getBlobClient(key);
+
+  const startsOn = new Date();
+  const expiresOn = new Date(startsOn.getTime() + 15 * 60 * 1000);
+
+  const sasToken = generateBlobSASQueryParameters(
+    {
+      containerName,
+      blobName: key,
+      permissions: BlobSASPermissions.parse("r"),
+      startsOn,
+      expiresOn,
+    },
+    sharedKeyCred,
+  ).toString();
+
+  return `${blobClient.url}?${sasToken}`;
 }

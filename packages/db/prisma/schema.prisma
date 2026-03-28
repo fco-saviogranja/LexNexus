@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -21,6 +22,42 @@ enum Difficulty {
   easy
   medium
   hard
+}
+
+enum ImportReviewStatus {
+  approved
+  pending_review
+  rejected
+}
+
+enum ImportRunStatus {
+  running
+  completed
+  completed_with_errors
+  failed
+}
+
+enum ImportRunTrigger {
+  schedule
+  manual
+}
+
+enum ImportIssueSeverity {
+  info
+  warning
+  error
+}
+
+enum QuestionSource {
+  manual
+  pci_concursos
+  oab_oficial
+  public_exam_import
+}
+
+enum DocumentKind {
+  study_material
+  mind_map
 }
 
 enum FlashcardSourceType {
@@ -52,6 +89,8 @@ model User {
   performance    PerformanceStat[]
   studyPlans     StudyPlan[]
   flashcards     Flashcard[]
+  questionComments QuestionComment[]
+  simulationAttempts SimulationAttempt[]
 
   @@map("users")
 }
@@ -77,18 +116,75 @@ model Discipline {
   performanceStats PerformanceStat[]
   studyTasks       StudyTask[]
   flashcards       Flashcard[]
+  simulationAttempts SimulationAttempt[]
 
   @@map("disciplines")
+}
+
+model Exam {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceSite    QuestionSource @default(pci_concursos) @map("source_site")
+  sourceKey     String         @unique @map("source_key")
+  sourceCategory String?       @map("source_category")
+  title         String
+  cargo         String?
+  year          Int?
+  instituicao   String?
+  banca         String?
+  nivel         String?
+  modalidade    String?
+  areaFormacao  String?        @map("area_formacao")
+  areaAtuacao   String?        @map("area_atuacao")
+  examPageUrl   String?        @map("exam_page_url")
+  pdfUrl        String?        @map("pdf_url")
+  answerKeyUrl  String?        @map("answer_key_url")
+  reviewStatus  ImportReviewStatus @default(pending_review) @map("review_status")
+  parseConfidence Float        @default(0) @map("parse_confidence")
+  metadata      Json?
+  importedAt    DateTime       @default(now()) @map("imported_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  questions     Question[]
+  importIssues  QuestionImportIssue[]
+  resources     ExamResource[]
+
+  @@index([sourceCategory, year])
+  @@index([reviewStatus, year])
+  @@index([year, banca, instituicao])
+  @@map("exams")
+}
+
+model ExamResource {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  examId       String   @map("exam_id") @db.Uuid
+  title        String
+  url          String
+  resourceType String   @map("resource_type")
+  phase        String?
+  resourceArea String?  @map("resource_area")
+  proofType    Int?     @map("proof_type")
+  publishedAt  DateTime? @map("published_at")
+  isPrimary    Boolean  @default(false) @map("is_primary")
+  metadata     Json?
+  createdAt    DateTime @default(now()) @map("created_at")
+  exam         Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, url])
+  @@index([examId, phase])
+  @@index([resourceType, publishedAt])
+  @@map("exam_resources")
 }
 
 model Document {
   id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title        String
   disciplineId String            @map("discipline_id") @db.Uuid
+  kind         DocumentKind      @default(study_material)
+  topic        String?
   description  String?
   discipline   Discipline        @relation(fields: [disciplineId], references: [id], onDelete: Restrict)
   versions     DocumentVersion[]
 
+  @@index([disciplineId, kind])
   @@index([disciplineId])
   @@map("documents")
 }
@@ -99,6 +195,8 @@ model DocumentVersion {
   versionNumber     Int                 @map("version_number")
   isCurrent         Boolean             @default(false) @map("is_current")
   blobUrl           String              @map("blob_url")
+  mimeType          String              @default("application/pdf") @map("mime_type")
+  fileName          String?             @map("file_name")
   fileHash          String              @map("file_hash")
   changelog         String?
   publishedAt       DateTime            @default(now()) @map("published_at")
@@ -190,21 +288,99 @@ model ClickEvent {
 }
 
 model Question {
-  id            String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  disciplineId  String            @map("discipline_id") @db.Uuid
-  banca         String
-  year          Int
-  statement     String
-  correctOption String            @map("correct_option")
-  difficulty    Difficulty
-  createdAt     DateTime          @default(now()) @map("created_at")
-  discipline    Discipline        @relation(fields: [disciplineId], references: [id], onDelete: Restrict)
-  options       QuestionOption[]
-  userAnswers   UserAnswer[]
+  id              String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  disciplineId    String                     @map("discipline_id") @db.Uuid
+  examId          String?                    @map("exam_id") @db.Uuid
+  questionNumber  Int?                       @map("question_number")
+  banca           String
+  year            Int
+  instituicao     String?
+  cargo           String?
+  nivel           String?
+  modalidade      String?
+  areaFormacao    String?                    @map("area_formacao")
+  areaAtuacao     String?                    @map("area_atuacao")
+  statement       String
+  correctOption   String?                    @map("correct_option")
+  difficulty      Difficulty
+  subjectTags     String[]                   @default([]) @map("subject_tags")
+  lawTags         String[]                   @default([]) @map("law_tags")
+  sourceSite      QuestionSource             @default(manual) @map("source_site")
+  sourceName      String?                    @map("source_name")
+  sourceUrl       String?                    @map("source_url")
+  externalId      String?                    @map("external_id")
+  commentedAnswer String?                    @map("commented_answer")
+  isOutdated      Boolean                    @default(false) @map("is_outdated")
+  isAnnulled      Boolean                    @default(false) @map("is_annulled")
+  reviewStatus    ImportReviewStatus         @default(approved) @map("review_status")
+  parseConfidence Float                      @default(1) @map("parse_confidence")
+  normalizedStatementHash String?            @map("normalized_statement_hash")
+  metadata        Json?
+  createdAt       DateTime                   @default(now()) @map("created_at")
+  discipline      Discipline                 @relation(fields: [disciplineId], references: [id], onDelete: Restrict)
+  exam            Exam?                      @relation(fields: [examId], references: [id], onDelete: SetNull)
+  options         QuestionOption[]
+  userAnswers     UserAnswer[]
+  comments        QuestionComment[]
+  importIssues    QuestionImportIssue[]
+  simulationAttemptQuestions SimulationAttemptQuestion[]
 
+  @@unique([examId, questionNumber])
+  @@index([reviewStatus, year])
+  @@index([normalizedStatementHash])
   @@index([disciplineId, banca, year, difficulty])
+  @@index([banca, instituicao, cargo, nivel, year])
   @@index([year])
   @@map("questions")
+}
+
+model QuestionImportRun {
+  id                     String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceSite             QuestionSource       @default(pci_concursos) @map("source_site")
+  status                 ImportRunStatus      @default(running)
+  trigger                ImportRunTrigger     @default(schedule)
+  categories             String[]             @default([])
+  maxPages               Int?                 @map("max_pages")
+  maxExamsPerCategory    Int?                 @map("max_exams_per_category")
+  delayMs                Int?                 @map("delay_ms")
+  dryRun                 Boolean              @default(false) @map("dry_run")
+  totalExamsDiscovered   Int                  @default(0) @map("total_exams_discovered")
+  processedExams         Int                  @default(0) @map("processed_exams")
+  importedQuestions      Int                  @default(0) @map("imported_questions")
+  pendingReviewQuestions Int                  @default(0) @map("pending_review_questions")
+  rejectedQuestions      Int                  @default(0) @map("rejected_questions")
+  skippedExams           Int                  @default(0) @map("skipped_exams")
+  failedExams            Int                  @default(0) @map("failed_exams")
+  summary                Json?
+  startedAt              DateTime             @default(now()) @map("started_at")
+  finishedAt             DateTime?            @map("finished_at")
+  issues                 QuestionImportIssue[]
+
+  @@index([status, startedAt])
+  @@index([sourceSite, startedAt])
+  @@map("question_import_runs")
+}
+
+model QuestionImportIssue {
+  id         String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  runId      String               @map("run_id") @db.Uuid
+  examId     String?              @map("exam_id") @db.Uuid
+  questionId String?              @map("question_id") @db.Uuid
+  sourceKey  String?              @map("source_key")
+  stage      String
+  severity   ImportIssueSeverity  @default(info)
+  message    String
+  metadata   Json?
+  createdAt  DateTime             @default(now()) @map("created_at")
+  run        QuestionImportRun    @relation(fields: [runId], references: [id], onDelete: Cascade)
+  exam       Exam?                @relation(fields: [examId], references: [id], onDelete: SetNull)
+  question   Question?            @relation(fields: [questionId], references: [id], onDelete: SetNull)
+
+  @@index([runId, createdAt])
+  @@index([severity, createdAt])
+  @@index([examId])
+  @@index([questionId])
+  @@map("question_import_issues")
 }
 
 model QuestionOption {
@@ -234,6 +410,21 @@ model UserAnswer {
   @@map("user_answers")
 }
 
+model QuestionComment {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  questionId String    @map("question_id") @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  body       String
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([questionId, createdAt])
+  @@index([userId, createdAt])
+  @@map("question_comments")
+}
+
 model PerformanceStat {
   userId         String     @map("user_id") @db.Uuid
   disciplineId   String     @map("discipline_id") @db.Uuid
@@ -260,6 +451,38 @@ model StudyPlan {
 
   @@index([userId])
   @@map("study_plans")
+}
+
+model SimulationAttempt {
+  id             String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String                     @map("user_id") @db.Uuid
+  disciplineId   String?                    @map("discipline_id") @db.Uuid
+  title          String?
+  totalQuestions Int                        @map("total_questions")
+  correctAnswers Int                        @default(0) @map("correct_answers")
+  accuracy       Float                      @default(0)
+  createdAt      DateTime                   @default(now()) @map("created_at")
+  user           User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discipline     Discipline?                @relation(fields: [disciplineId], references: [id], onDelete: SetNull)
+  questions      SimulationAttemptQuestion[]
+
+  @@index([userId, createdAt])
+  @@index([disciplineId])
+  @@map("simulation_attempts")
+}
+
+model SimulationAttemptQuestion {
+  attemptId       String             @map("attempt_id") @db.Uuid
+  questionId      String             @map("question_id") @db.Uuid
+  selectedOption  String?            @map("selected_option")
+  correctOption   String?            @map("correct_option")
+  isCorrect       Boolean?           @map("is_correct")
+  attempt         SimulationAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question        Question           @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@id([attemptId, questionId])
+  @@index([questionId])
+  @@map("simulation_attempt_questions")
 }
 
 model StudyTask {

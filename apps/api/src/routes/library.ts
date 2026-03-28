@@ -13,7 +13,8 @@ export async function libraryRoutes(app: FastifyInstance) {
               orderBy: { versionNumber: "desc" },
               take: 1
             }
-          }
+          },
+          orderBy: [{ kind: "asc" }, { topic: "asc" }, { title: "asc" }]
         }
       },
       orderBy: { name: "asc" }

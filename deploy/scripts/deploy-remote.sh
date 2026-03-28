@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ -z "${DROPLET_HOST:-}" || -z "${DROPLET_USER:-}" ]]; then
-  echo "Defina DROPLET_HOST e DROPLET_USER antes de executar."
-  echo "Exemplo: DROPLET_HOST=203.0.113.10 DROPLET_USER=root bash deploy/scripts/deploy-remote.sh"
+SERVER_HOST="${SERVER_HOST:-${DROPLET_HOST:-}}"
+SERVER_USER="${SERVER_USER:-${DROPLET_USER:-}}"
+SERVER_PORT="${SERVER_PORT:-${DROPLET_PORT:-22}}"
+
+if [[ -z "${SERVER_HOST}" || -z "${SERVER_USER}" ]]; then
+  echo "Defina SERVER_HOST e SERVER_USER (ou DROPLET_HOST e DROPLET_USER) antes de executar."
+  echo "Exemplo: SERVER_HOST=203.0.113.10 SERVER_USER=ubuntu bash deploy/scripts/deploy-remote.sh"
   exit 1
 fi
 
 PROJECT_DIR="${PROJECT_DIR:-/var/www/lexnexus}"
 BRANCH="${BRANCH:-main}"
 
-ssh "${DROPLET_USER}@${DROPLET_HOST}" <<EOF
+ssh -p "${SERVER_PORT}" "${SERVER_USER}@${SERVER_HOST}" <<EOF
 set -euo pipefail
 cd "${PROJECT_DIR}"
 

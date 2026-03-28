@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+  <defs>
+    <linearGradient id="leftWing" x1="25" x2="96" y1="22" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9C7CFF" />
+      <stop offset="0.55" stop-color="#7A5CFF" />
+      <stop offset="1" stop-color="#4D37C7" />
+    </linearGradient>
+    <linearGradient id="rightWing" x1="72" x2="143" y1="18" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60D4FF" />
+      <stop offset="0.55" stop-color="#2AB7FF" />
+      <stop offset="1" stop-color="#0B88D3" />
+    </linearGradient>
+    <linearGradient id="core" x1="62" x2="106" y1="82" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B8D5FF" />
+      <stop offset="0.5" stop-color="#7D8FFF" />
+      <stop offset="1" stop-color="#5260D8" />
+    </linearGradient>
+    <linearGradient id="beam" x1="49" x2="119" y1="92" y2="127" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60D4FF" />
+      <stop offset="0.5" stop-color="#7D8FFF" />
+      <stop offset="1" stop-color="#9C7CFF" />
+    </linearGradient>
+    <linearGradient id="bowlLeft" x1="38" x2="77" y1="109" y2="139" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60D4FF" />
+      <stop offset="1" stop-color="#2399DE" />
+    </linearGradient>
+    <linearGradient id="bowlRight" x1="91" x2="130" y1="109" y2="139" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#AF8AFF" />
+      <stop offset="1" stop-color="#7A5CFF" />
+    </linearGradient>
+    <linearGradient id="base" x1="56" x2="112" y1="139" y2="157" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3E53D8" />
+      <stop offset="0.5" stop-color="#6D79F0" />
+      <stop offset="1" stop-color="#4E5FD7" />
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="translate(84 101) rotate(90) scale(54 62)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B6F0FF" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#B6F0FF" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <ellipse cx="84" cy="101" rx="53" ry="42" fill="url(#halo)" />
+  <g filter="drop-shadow(0px 18px 34px rgba(10,18,36,0.18))">
+    <path d="M80 36C67 15 44 9 30 23C15 38 18 62 38 80C48 89 59 99 64 112C67 95 74 80 85 66C95 54 94 46 80 36Z" fill="url(#leftWing)" />
+    <path d="M88 36C101 15 124 9 138 23C153 38 150 62 130 80C120 89 109 99 104 112C101 95 94 80 83 66C73 54 74 46 88 36Z" fill="url(#rightWing)" />
+    <path d="M45 53C55 59 63 68 69 80" stroke="rgba(255,255,255,0.32)" stroke-linecap="round" stroke-width="4.5" />
+    <path d="M123 53C113 59 105 68 99 80" stroke="rgba(255,255,255,0.32)" stroke-linecap="round" stroke-width="4.5" />
+    <circle cx="84" cy="96" r="12" fill="url(#core)" />
+    <path d="M84 104V141" stroke="url(#core)" stroke-linecap="round" stroke-width="10" />
+    <path d="M57 92H111" stroke="url(#beam)" stroke-linecap="round" stroke-width="6" />
+    <circle cx="57" cy="92" r="5" fill="url(#bowlLeft)" />
+    <circle cx="111" cy="92" r="5" fill="url(#bowlRight)" />
+    <path d="M57 97L49 124" stroke="url(#bowlLeft)" stroke-linecap="round" stroke-width="4" />
+    <path d="M57 97L65 124" stroke="url(#bowlLeft)" stroke-linecap="round" stroke-width="4" />
+    <path d="M111 97L103 124" stroke="url(#bowlRight)" stroke-linecap="round" stroke-width="4" />
+    <path d="M111 97L119 124" stroke="url(#bowlRight)" stroke-linecap="round" stroke-width="4" />
+    <path d="M44 123C44 132 50 138 57 138C64 138 70 132 70 123H44Z" fill="url(#bowlLeft)" />
+    <path d="M98 123C98 132 104 138 111 138C118 138 124 132 124 123H98Z" fill="url(#bowlRight)" />
+    <rect x="66" y="140" width="36" height="9" rx="4.5" fill="url(#base)" />
+    <rect x="57" y="149" width="54" height="9" rx="4.5" fill="url(#base)" />
+  </g>
+</svg>

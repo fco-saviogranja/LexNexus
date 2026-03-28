@@ -1,16 +1,16 @@
 param(
-  [string]$DropletHost = $env:DROPLET_HOST,
-  [string]$DropletUser = $env:DROPLET_USER,
+  [string]$ServerHost = $(if ($env:SERVER_HOST) { $env:SERVER_HOST } else { $env:DROPLET_HOST }),
+  [string]$ServerUser = $(if ($env:SERVER_USER) { $env:SERVER_USER } else { $env:DROPLET_USER }),
   [string]$ProjectDir = $(if ($env:PROJECT_DIR) { $env:PROJECT_DIR } else { "/var/www/lexnexus" }),
-  [string]$Branch = $(if ($env:BRANCH) { $env:BRANCH } else { "main" }),
-  [string]$SshKeyPath = $env:DROPLET_KEY_PATH,
-  [int]$Port = $(if ($env:DROPLET_PORT) { [int]$env:DROPLET_PORT } else { 22 })
+  [string]$Branch = $(if ($env:DEPLOY_BRANCH) { $env:DEPLOY_BRANCH } elseif ($env:BRANCH) { $env:BRANCH } else { "main" }),
+  [string]$SshKeyPath = $(if ($env:SERVER_KEY_PATH) { $env:SERVER_KEY_PATH } else { $env:DROPLET_KEY_PATH }),
+  [int]$Port = $(if ($env:SERVER_PORT) { [int]$env:SERVER_PORT } elseif ($env:DROPLET_PORT) { [int]$env:DROPLET_PORT } else { 22 })
 )
 
 $ErrorActionPreference = "Stop"
 
-if ([string]::IsNullOrWhiteSpace($DropletHost) -or [string]::IsNullOrWhiteSpace($DropletUser)) {
-  Write-Error "Defina DROPLET_HOST e DROPLET_USER. Exemplo:`n`$env:DROPLET_HOST='45.55.207.46'`n`$env:DROPLET_USER='root'"
+if ([string]::IsNullOrWhiteSpace($ServerHost) -or [string]::IsNullOrWhiteSpace($ServerUser)) {
+  Write-Error "Defina SERVER_HOST e SERVER_USER (ou DROPLET_HOST/DROPLET_USER). Exemplo:`n`$env:SERVER_HOST='203.0.113.10'`n`$env:SERVER_USER='ubuntu'"
 }
 
 $remoteScript = @"
@@ -74,7 +74,7 @@ if (-not [string]::IsNullOrWhiteSpace($SshKeyPath)) {
 $encodedScript = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($remoteScript))
 $remoteCommand = "echo $encodedScript | base64 -d | bash"
 
-$baseArgs += @("$DropletUser@$DropletHost", $remoteCommand)
+$baseArgs += @("$ServerUser@$ServerHost", $remoteCommand)
 
 & ssh @baseArgs
 if ($LASTEXITCODE -ne 0) {

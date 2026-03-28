@@ -9,3 +9,18 @@ coverage
 apps/web/.next
 apps/api/dist
 packages/db/generated
+
+# Deploy artifacts
+*.zip
+deploy-api/
+deploy-api-clean/
+deploy-api-flat/
+deploy-web/
+api-logs/
+
+# Large files / local data
+LIVROS/
+tmp/
+
+# IDE / build info
+*.tsbuildinfo

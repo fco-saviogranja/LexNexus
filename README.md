@@ -122,16 +122,17 @@ Acessos seed:
 - `/study-plans`, `/study-tasks`
 - `/flashcards`, `/flashcards/reviews`
 
-## Deploy DigitalOcean (Droplet + domínio já existente)
+## Deploy Oracle Cloud (OCI Compute + domínio já existente)
 
 ### 1) Infra recomendada
-- Droplet Ubuntu 22.04+
-- PostgreSQL gerenciado da DigitalOcean (preferível ao banco no Droplet)
-- Spaces privado para PDFs
+- Instância OCI Compute Ubuntu 22.04+ (recomendado 2 OCPU / 4GB RAM para folga de build)
+- PostgreSQL gerenciado (OCI Database ou externo) preferível ao banco na VM
+- Bucket S3 compatível privado para PDFs (OCI Object Storage S3-compatível ou Spaces)
 
-### 2) DNS (no seu provedor de domínio)
-- Crie/ajuste registro `A` para `app.seudominio.com` apontando para IP do Droplet
-- Crie/ajuste registro `A` para `api.seudominio.com` apontando para IP do Droplet
+### 2) Rede e DNS
+- Na OCI, liberar inbound `22`, `80` e `443` no Security List/NSG da subnet
+- Crie/ajuste registro `A` para `app.seudominio.com` apontando para IP público da instância OCI
+- Crie/ajuste registro `A` para `api.seudominio.com` apontando para IP público da instância OCI
 - Aguarde propagação DNS
 
 ### 3) Bootstrap do servidor
@@ -172,11 +173,13 @@ Acessos seed:
 - Dispara em push na `main` e também manualmente (`workflow_dispatch`)
 
 Secrets necessários no GitHub (Repository → Settings → Secrets and variables → Actions):
-- `DROPLET_HOST`: IP do droplet (ex.: `45.55.207.46`)
-- `DROPLET_USER`: usuário SSH (ex.: `root`)
-- `DROPLET_SSH_KEY`: chave privada SSH do servidor (conteúdo completo, incluindo `BEGIN`/`END`)
+- `SERVER_HOST`: IP público da instância OCI
+- `SERVER_USER`: usuário SSH (ex.: `ubuntu`)
+- `SERVER_SSH_KEY`: chave privada SSH do servidor (conteúdo completo, incluindo `BEGIN`/`END`)
 - `APP_DIR`: diretório do projeto no servidor (ex.: `/var/www/lexnexus`)
 - `DEPLOY_BRANCH`: branch de deploy (ex.: `main`)
+
+Compatibilidade: o workflow ainda aceita `DROPLET_HOST`, `DROPLET_USER` e `DROPLET_SSH_KEY`.
 
 Fluxo sugerido para primeira execução:
 1. No servidor, garanta que o projeto já está clonado em `/var/www/lexnexus` e com `.env` pronto.

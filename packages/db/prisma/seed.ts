@@ -64,8 +64,9 @@ async function main() {
       documentId: documento.id,
       versionNumber: 1,
       isCurrent: true,
-      blobUrl: "https://example.com/material.pdf",
-      fileHash: "seed-hash",
+      blobUrl: "/sample-docs/controle-de-constitucionalidade.pdf",
+      fileHash: "sample-controle-constitucionalidade-v1",
+      fileName: "controle-de-constitucionalidade.pdf",
       changelog: "Versão inicial"
     }
   });

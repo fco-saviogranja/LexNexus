@@ -1,0 +1,632 @@
+{
+  "meta": {
+    "id": "oab-direito-constitucional-v1",
+    "title": "Direito Constitucional - OAB",
+    "discipline": "Direito Constitucional",
+    "examTrack": "OAB",
+    "version": 1,
+    "language": "pt-BR",
+    "rootNodeId": "constitucional-oab",
+    "sourceProfile": [
+      {
+        "role": "estrutura_oab",
+        "file": "LIVROS/CONSTITUCIONAL/Constitucional ebook-direito-material-atualizado-070723.pdf"
+      },
+      {
+        "role": "priorizacao",
+        "file": "LIVROS/CONSTITUCIONAL/direito constitucional Aragonê.pdf"
+      },
+      {
+        "role": "doutrina_principal",
+        "file": "LIVROS/CONSTITUCIONAL/alexandre_de_moraes_-_direito_constitucional_-_atualizado_at_ec_95_de_15-dez-2016_-_2017_pdf_.pdf"
+      },
+      {
+        "role": "doutrina_complementar",
+        "file": "LIVROS/CONSTITUCIONAL/Curso de Direito Constitucional - Luis Roberto Barroso.pdf"
+      },
+      {
+        "role": "base_normativa",
+        "file": "LIVROS/CONSTITUCIONAL/cf 88 ATUALIZADA.pdf"
+      },
+      {
+        "role": "apoio_jurisprudencial",
+        "file": "LIVROS/CONSTITUCIONAL/Resumo_Jurisprudencia_D_Constitucional_Guia_Fiscal_3_0_Plus_Andrety.pdf"
+      }
+    ],
+    "studyPriority": [
+      "direitos-fundamentais",
+      "controle-constitucionalidade",
+      "remedios-constitucionais",
+      "organizacao-estado",
+      "separacao-poderes",
+      "processo-legislativo",
+      "funcoes-essenciais",
+      "ordem-social",
+      "constituicao"
+    ],
+    "renderHints": {
+      "centerLabel": "Direito Constitucional",
+      "centerSuffix": "OAB",
+      "primaryBranches": 9,
+      "emphasisNodeIds": [
+        "direitos-fundamentais",
+        "controle-constitucionalidade",
+        "remedios-constitucionais"
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "id": "constitucional-oab",
+      "parentId": null,
+      "order": 0,
+      "label": "Direito Constitucional - OAB",
+      "layer": "root",
+      "priority": "alta",
+      "summary": "Mapa-mestre da disciplina com recorte de incidência para a OAB.",
+      "keyReferences": ["CF/88"],
+      "relatedNodeIds": []
+    },
+    {
+      "id": "constituicao",
+      "parentId": "constitucional-oab",
+      "order": 1,
+      "label": "Constituição",
+      "layer": "block",
+      "priority": "media",
+      "summary": "Base conceitual da disciplina: conceito, supremacia, eficácia, poder constituinte e princípios fundamentais.",
+      "keyReferences": ["CF, arts. 1º a 4º", "CF, art. 60"],
+      "relatedNodeIds": ["processo-legislativo", "controle-constitucionalidade"]
+    },
+    {
+      "id": "constituicao-conceito",
+      "parentId": "constituicao",
+      "order": 1,
+      "label": "Conceito, classificação e supremacia",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Distingue Constituição formal e material, analítica e sintética, rígida e flexível, com foco na supremacia constitucional.",
+      "keyReferences": ["CF/88", "doutrina constitucional"],
+      "relatedNodeIds": ["controle-constitucionalidade"]
+    },
+    {
+      "id": "constituicao-eficacia",
+      "parentId": "constituicao",
+      "order": 2,
+      "label": "Eficácia das normas",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Classifica as normas em plena, contida e limitada, com reflexo direto na aplicabilidade e nas questões de prova.",
+      "keyReferences": ["CF/88"],
+      "relatedNodeIds": ["direitos-teoria-geral", "remedios-mi"]
+    },
+    {
+      "id": "constituicao-poder-constituinte",
+      "parentId": "constituicao",
+      "order": 3,
+      "label": "Poder constituinte",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Abrange poder constituinte originário, derivado reformador, derivado decorrente e mutação constitucional.",
+      "keyReferences": ["CF, art. 60"],
+      "relatedNodeIds": ["processo-limites-reforma"]
+    },
+    {
+      "id": "constituicao-principios",
+      "parentId": "constituicao",
+      "order": 4,
+      "label": "Princípios fundamentais",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Reúne fundamentos da República, objetivos fundamentais e princípios das relações internacionais.",
+      "keyReferences": ["CF, arts. 1º a 4º"],
+      "relatedNodeIds": ["organizacao-federacao", "direitos-teoria-geral"]
+    },
+    {
+      "id": "direitos-fundamentais",
+      "parentId": "constitucional-oab",
+      "order": 2,
+      "label": "Direitos Fundamentais",
+      "layer": "block",
+      "priority": "alta",
+      "summary": "Núcleo mais recorrente em prova: teoria geral, art. 5º, direitos sociais, nacionalidade, direitos políticos e colisão de direitos.",
+      "keyReferences": ["CF, arts. 5º a 17"],
+      "relatedNodeIds": ["remedios-constitucionais", "controle-constitucionalidade"]
+    },
+    {
+      "id": "direitos-teoria-geral",
+      "parentId": "direitos-fundamentais",
+      "order": 1,
+      "label": "Teoria geral",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Dimensões dos direitos fundamentais, eficácia vertical, horizontal e diagonal, além de limites e restrições.",
+      "keyReferences": ["CF, art. 5º, § 1º"],
+      "relatedNodeIds": ["constituicao-eficacia", "direitos-colisao"]
+    },
+    {
+      "id": "direitos-art5",
+      "parentId": "direitos-fundamentais",
+      "order": 2,
+      "label": "Art. 5º",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Agrupa vida, liberdade, igualdade, segurança e propriedade, com leitura orientada por incisos e jurisprudência.",
+      "keyReferences": ["CF, art. 5º"],
+      "relatedNodeIds": ["remedios-hc", "remedios-ms", "remedios-hd"]
+    },
+    {
+      "id": "direitos-sociais",
+      "parentId": "direitos-fundamentais",
+      "order": 3,
+      "label": "Direitos sociais",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Bloco prestacional vinculado ao art. 6º e à concretização material da igualdade.",
+      "keyReferences": ["CF, arts. 6º a 11"],
+      "relatedNodeIds": ["ordem-social-seguridade", "ordem-social-educacao-cultura"]
+    },
+    {
+      "id": "direitos-nacionalidade",
+      "parentId": "direitos-fundamentais",
+      "order": 4,
+      "label": "Nacionalidade",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Distingue brasileiros natos e naturalizados, hipóteses de perda, reaquisição e cargos privativos.",
+      "keyReferences": ["CF, arts. 12 e 13"],
+      "relatedNodeIds": ["direitos-politicos"]
+    },
+    {
+      "id": "direitos-politicos",
+      "parentId": "direitos-fundamentais",
+      "order": 5,
+      "label": "Direitos políticos e partidos políticos",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Abrange sufrágio, elegibilidade, inelegibilidades, perda e suspensão dos direitos políticos e regime partidário.",
+      "keyReferences": ["CF, arts. 14 a 17"],
+      "relatedNodeIds": ["organizacao-federacao", "separacao-legislativo"]
+    },
+    {
+      "id": "direitos-colisao",
+      "parentId": "direitos-fundamentais",
+      "order": 6,
+      "label": "Colisão de direitos",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Resolve conflitos por proporcionalidade, razoabilidade e ponderação, com ênfase em casos concretos.",
+      "keyReferences": ["princípios constitucionais"],
+      "relatedNodeIds": ["constituicao-conceito", "controle-efeitos"]
+    },
+    {
+      "id": "remedios-constitucionais",
+      "parentId": "constitucional-oab",
+      "order": 3,
+      "label": "Remédios Constitucionais",
+      "layer": "block",
+      "priority": "alta",
+      "summary": "Bloco estratégico para 1ª e 2ª fase, com foco em cabimento, legitimidade e proteção imediata de direitos.",
+      "keyReferences": ["CF, art. 5º, LXVIII a LXXIII"],
+      "relatedNodeIds": ["direitos-fundamentais", "controle-constitucionalidade"]
+    },
+    {
+      "id": "remedios-hc",
+      "parentId": "remedios-constitucionais",
+      "order": 1,
+      "label": "Habeas corpus",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Protege a liberdade de locomoção contra ilegalidade ou abuso de poder, em caráter preventivo ou repressivo.",
+      "keyReferences": ["CF, art. 5º, LXVIII"],
+      "relatedNodeIds": ["direitos-art5"]
+    },
+    {
+      "id": "remedios-ms",
+      "parentId": "remedios-constitucionais",
+      "order": 2,
+      "label": "Mandado de segurança",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Tutela direito líquido e certo não amparado por habeas corpus ou habeas data.",
+      "keyReferences": ["CF, art. 5º, LXIX e LXX", "Lei 12.016/2009"],
+      "relatedNodeIds": ["direitos-art5", "controle-concentrado"]
+    },
+    {
+      "id": "remedios-mi",
+      "parentId": "remedios-constitucionais",
+      "order": 3,
+      "label": "Mandado de injunção",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Combate a omissão normativa que inviabiliza o exercício de direitos e liberdades constitucionais.",
+      "keyReferences": ["CF, art. 5º, LXXI", "Lei 13.300/2016"],
+      "relatedNodeIds": ["constituicao-eficacia", "controle-concentrado"]
+    },
+    {
+      "id": "remedios-hd",
+      "parentId": "remedios-constitucionais",
+      "order": 4,
+      "label": "Habeas data",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Assegura conhecimento e retificação de informações pessoais constantes de registros públicos ou de caráter público.",
+      "keyReferences": ["CF, art. 5º, LXXII"],
+      "relatedNodeIds": ["direitos-art5"]
+    },
+    {
+      "id": "remedios-acao-popular",
+      "parentId": "remedios-constitucionais",
+      "order": 5,
+      "label": "Ação popular",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Permite ao cidadão defender patrimônio público, moralidade administrativa, meio ambiente e patrimônio histórico-cultural.",
+      "keyReferences": ["CF, art. 5º, LXXIII", "Lei 4.717/1965"],
+      "relatedNodeIds": ["organizacao-administracao", "ordem-social-meio-ambiente"]
+    },
+    {
+      "id": "organizacao-estado",
+      "parentId": "constitucional-oab",
+      "order": 4,
+      "label": "Organização do Estado",
+      "layer": "block",
+      "priority": "alta",
+      "summary": "Federação, competências, intervenção e administração pública formam um núcleo de incidência recorrente na OAB.",
+      "keyReferences": ["CF, arts. 18 a 43", "CF, arts. 37 a 41"],
+      "relatedNodeIds": ["separacao-poderes", "controle-constitucionalidade"]
+    },
+    {
+      "id": "organizacao-federacao",
+      "parentId": "organizacao-estado",
+      "order": 1,
+      "label": "Federação e entes federativos",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Define a estrutura federativa brasileira e a autonomia de União, Estados, Distrito Federal e Municípios.",
+      "keyReferences": ["CF, arts. 18 a 19"],
+      "relatedNodeIds": ["direitos-politicos", "organizacao-competencias"]
+    },
+    {
+      "id": "organizacao-competencias",
+      "parentId": "organizacao-estado",
+      "order": 2,
+      "label": "Repartição de competências",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Distingue competências privativas, exclusivas, comuns e concorrentes, ponto muito explorado em prova.",
+      "keyReferences": ["CF, arts. 21 a 24", "CF, art. 30"],
+      "relatedNodeIds": ["controle-concentrado", "organizacao-intervencao"]
+    },
+    {
+      "id": "organizacao-intervencao",
+      "parentId": "organizacao-estado",
+      "order": 3,
+      "label": "Intervenção",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Abrange intervenção federal e estadual, hipóteses, competência e limites constitucionais.",
+      "keyReferences": ["CF, arts. 34 a 36"],
+      "relatedNodeIds": ["organizacao-competencias", "separacao-executivo"]
+    },
+    {
+      "id": "organizacao-administracao",
+      "parentId": "organizacao-estado",
+      "order": 4,
+      "label": "Administração pública",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Reúne princípios do art. 37, concurso público, teto, acumulação, responsabilidade e moralidade administrativa.",
+      "keyReferences": ["CF, art. 37"],
+      "relatedNodeIds": ["remedios-acao-popular", "funcoes-mp"]
+    },
+    {
+      "id": "organizacao-servidores",
+      "parentId": "organizacao-estado",
+      "order": 5,
+      "label": "Servidores públicos",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Cobre regime constitucional, estabilidade, direitos, vedações e aspectos remuneratórios.",
+      "keyReferences": ["CF, arts. 39 a 41"],
+      "relatedNodeIds": ["organizacao-administracao"]
+    },
+    {
+      "id": "separacao-poderes",
+      "parentId": "constitucional-oab",
+      "order": 5,
+      "label": "Separação dos Poderes",
+      "layer": "block",
+      "priority": "alta",
+      "summary": "Estrutura, competências e controles recíprocos entre Legislativo, Executivo e Judiciário.",
+      "keyReferences": ["CF, arts. 44 a 135"],
+      "relatedNodeIds": ["organizacao-estado", "funcoes-essenciais"]
+    },
+    {
+      "id": "separacao-legislativo",
+      "parentId": "separacao-poderes",
+      "order": 1,
+      "label": "Poder Legislativo",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Compreende Congresso, Câmara, Senado, imunidades, comissões e fiscalização parlamentar.",
+      "keyReferences": ["CF, arts. 44 a 75"],
+      "relatedNodeIds": ["processo-legislativo", "direitos-politicos"]
+    },
+    {
+      "id": "separacao-executivo",
+      "parentId": "separacao-poderes",
+      "order": 2,
+      "label": "Poder Executivo",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Abrange atribuições do Presidente da República, responsabilidade, substituição e função administrativa superior.",
+      "keyReferences": ["CF, arts. 76 a 91"],
+      "relatedNodeIds": ["organizacao-intervencao", "processo-legislativo"]
+    },
+    {
+      "id": "separacao-judiciario",
+      "parentId": "separacao-poderes",
+      "order": 3,
+      "label": "Poder Judiciário",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Estrutura do STF, STJ, Justiça Federal, Justiça Estadual e CNJ, com destaque para competências.",
+      "keyReferences": ["CF, arts. 92 a 126"],
+      "relatedNodeIds": ["controle-concentrado", "funcoes-essenciais"]
+    },
+    {
+      "id": "controle-constitucionalidade",
+      "parentId": "constitucional-oab",
+      "order": 6,
+      "label": "Controle de Constitucionalidade",
+      "layer": "block",
+      "priority": "alta",
+      "summary": "Tema central da disciplina, com forte incidência na OAB, principalmente em ADI, ADC, ADO, ADPF, legitimidade e efeitos.",
+      "keyReferences": ["CF, arts. 97, 102 e 103", "Lei 9.868/1999", "Lei 9.882/1999"],
+      "relatedNodeIds": ["remedios-constitucionais", "processo-legislativo"]
+    },
+    {
+      "id": "controle-nocoes-gerais",
+      "parentId": "controle-constitucionalidade",
+      "order": 1,
+      "label": "Noções gerais",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Distingue controle preventivo e repressivo e situa o tema na supremacia constitucional.",
+      "keyReferences": ["CF/88"],
+      "relatedNodeIds": ["constituicao-conceito"]
+    },
+    {
+      "id": "controle-difuso",
+      "parentId": "controle-constitucionalidade",
+      "order": 2,
+      "label": "Controle difuso",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Via incidental, reserva de plenário, efeitos inter partes e impacto da repercussão geral.",
+      "keyReferences": ["CF, art. 97", "CF, art. 102, § 3º"],
+      "relatedNodeIds": ["separacao-judiciario"]
+    },
+    {
+      "id": "controle-concentrado",
+      "parentId": "controle-constitucionalidade",
+      "order": 3,
+      "label": "Controle concentrado",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Abrange ADI, ADC, ADO e ADPF, com foco em objeto, competência e cabimento.",
+      "keyReferences": ["CF, art. 102, I, a", "CF, art. 103"],
+      "relatedNodeIds": ["remedios-ms", "remedios-mi", "processo-legislativo"]
+    },
+    {
+      "id": "controle-legitimados",
+      "parentId": "controle-constitucionalidade",
+      "order": 4,
+      "label": "Legitimados do art. 103",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Diferencia legitimados universais e especiais e destaca a pertinência temática.",
+      "keyReferences": ["CF, art. 103"],
+      "relatedNodeIds": ["funcoes-mp", "funcoes-advocacia-publica"]
+    },
+    {
+      "id": "controle-efeitos",
+      "parentId": "controle-constitucionalidade",
+      "order": 5,
+      "label": "Efeitos da decisão",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Reúne eficácia erga omnes, efeito vinculante, modulação e dimensão temporal das decisões.",
+      "keyReferences": ["Lei 9.868/1999"],
+      "relatedNodeIds": ["direitos-colisao", "controle-difuso"]
+    },
+    {
+      "id": "controle-estadual",
+      "parentId": "controle-constitucionalidade",
+      "order": 6,
+      "label": "Controle estadual",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Trata do controle perante Tribunal de Justiça e do uso da Constituição estadual como parâmetro.",
+      "keyReferences": ["CF, art. 125, § 2º"],
+      "relatedNodeIds": ["organizacao-competencias", "separacao-judiciario"]
+    },
+    {
+      "id": "processo-legislativo",
+      "parentId": "constitucional-oab",
+      "order": 7,
+      "label": "Processo Legislativo",
+      "layer": "block",
+      "priority": "media",
+      "summary": "Tema de ligação entre Legislativo, controle de constitucionalidade e limites ao poder de reforma.",
+      "keyReferences": ["CF, arts. 59 a 69"],
+      "relatedNodeIds": ["separacao-legislativo", "controle-constitucionalidade"]
+    },
+    {
+      "id": "processo-especies",
+      "parentId": "processo-legislativo",
+      "order": 1,
+      "label": "Espécies normativas",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Agrupa emenda constitucional, lei complementar, lei ordinária, medida provisória, decreto legislativo e resolução.",
+      "keyReferences": ["CF, art. 59"],
+      "relatedNodeIds": ["controle-concentrado"]
+    },
+    {
+      "id": "processo-iniciativa",
+      "parentId": "processo-legislativo",
+      "order": 2,
+      "label": "Iniciativa legislativa",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Distingue iniciativa comum, privativa, concorrente e popular, com impacto frequente no controle de constitucionalidade.",
+      "keyReferences": ["CF, arts. 61 e 84"],
+      "relatedNodeIds": ["separacao-legislativo", "separacao-executivo"]
+    },
+    {
+      "id": "processo-sancao-veto",
+      "parentId": "processo-legislativo",
+      "order": 3,
+      "label": "Sanção e veto",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Mostra sanção expressa e tácita, veto jurídico e político e participação do Executivo na produção normativa.",
+      "keyReferences": ["CF, art. 66"],
+      "relatedNodeIds": ["separacao-executivo"]
+    },
+    {
+      "id": "processo-limites-reforma",
+      "parentId": "processo-legislativo",
+      "order": 4,
+      "label": "Limites ao poder de reforma",
+      "layer": "topic",
+      "priority": "alta",
+      "summary": "Envolve limites formais, materiais e circunstanciais do poder reformador, com destaque para cláusulas pétreas.",
+      "keyReferences": ["CF, art. 60"],
+      "relatedNodeIds": ["constituicao-poder-constituinte", "controle-concentrado"]
+    },
+    {
+      "id": "funcoes-essenciais",
+      "parentId": "constitucional-oab",
+      "order": 8,
+      "label": "Funções Essenciais à Justiça",
+      "layer": "block",
+      "priority": "media",
+      "summary": "Bloco institucional que conecta Ministério Público, advocacia pública, Defensoria e advocacia privada ao sistema de justiça.",
+      "keyReferences": ["CF, arts. 127 a 135"],
+      "relatedNodeIds": ["separacao-judiciario"]
+    },
+    {
+      "id": "funcoes-mp",
+      "parentId": "funcoes-essenciais",
+      "order": 1,
+      "label": "Ministério Público",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Princípios institucionais, funções constitucionais e papel na ordem jurídica.",
+      "keyReferences": ["CF, arts. 127 a 130-A"],
+      "relatedNodeIds": ["controle-legitimados", "organizacao-administracao"]
+    },
+    {
+      "id": "funcoes-advocacia-publica",
+      "parentId": "funcoes-essenciais",
+      "order": 2,
+      "label": "Advocacia Pública",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Representação judicial e consultoria jurídica das entidades públicas.",
+      "keyReferences": ["CF, arts. 131 e 132"],
+      "relatedNodeIds": ["controle-legitimados"]
+    },
+    {
+      "id": "funcoes-defensoria",
+      "parentId": "funcoes-essenciais",
+      "order": 3,
+      "label": "Defensoria Pública",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Assistência jurídica integral e gratuita, autonomia institucional e proteção dos vulneráveis.",
+      "keyReferences": ["CF, art. 134"],
+      "relatedNodeIds": ["direitos-fundamentais"]
+    },
+    {
+      "id": "funcoes-advocacia-privada",
+      "parentId": "funcoes-essenciais",
+      "order": 4,
+      "label": "Advocacia privada",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Indispensabilidade à administração da justiça e inviolabilidade profissional nos limites da lei.",
+      "keyReferences": ["CF, art. 133"],
+      "relatedNodeIds": ["separacao-judiciario"]
+    },
+    {
+      "id": "ordem-social",
+      "parentId": "constitucional-oab",
+      "order": 9,
+      "label": "Ordem Social e Temas Especiais",
+      "layer": "block",
+      "priority": "media",
+      "summary": "Fechamento da disciplina com temas constitucionais específicos, normalmente cobrados por recortes materiais.",
+      "keyReferences": ["CF, arts. 193 a 232"],
+      "relatedNodeIds": ["direitos-sociais"]
+    },
+    {
+      "id": "ordem-social-seguridade",
+      "parentId": "ordem-social",
+      "order": 1,
+      "label": "Seguridade social",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Integra saúde, previdência e assistência social, com forte vínculo aos direitos sociais.",
+      "keyReferences": ["CF, arts. 194 a 204"],
+      "relatedNodeIds": ["direitos-sociais"]
+    },
+    {
+      "id": "ordem-social-educacao-cultura",
+      "parentId": "ordem-social",
+      "order": 2,
+      "label": "Educação e cultura",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Abrange educação, cultura, desporto, ciência, tecnologia e inovação.",
+      "keyReferences": ["CF, arts. 205 a 219-B"],
+      "relatedNodeIds": ["direitos-sociais"]
+    },
+    {
+      "id": "ordem-social-meio-ambiente",
+      "parentId": "ordem-social",
+      "order": 3,
+      "label": "Meio ambiente",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Proteção constitucional do meio ambiente e sua conexão com tutela coletiva e ação popular.",
+      "keyReferences": ["CF, art. 225"],
+      "relatedNodeIds": ["remedios-acao-popular"]
+    },
+    {
+      "id": "ordem-social-familia",
+      "parentId": "ordem-social",
+      "order": 4,
+      "label": "Família, criança, adolescente e idoso",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Reúne proteção constitucional da família e dos grupos sujeitos a tutela reforçada.",
+      "keyReferences": ["CF, arts. 226 a 230"],
+      "relatedNodeIds": ["direitos-fundamentais"]
+    },
+    {
+      "id": "ordem-social-indigenas",
+      "parentId": "ordem-social",
+      "order": 5,
+      "label": "Povos indígenas",
+      "layer": "topic",
+      "priority": "media",
+      "summary": "Direitos territoriais, identidade cultural e proteção constitucional dos povos indígenas.",
+      "keyReferences": ["CF, arts. 231 e 232"],
+      "relatedNodeIds": ["direitos-fundamentais"]
+    }
+  ]
+}

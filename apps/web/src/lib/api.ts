@@ -1,8 +1,7 @@
 "use client";
 
 import { clearAuth, getAccessToken, getRefreshToken, saveAuth } from "./auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
+import { getApiUrl } from "./api-url";
 
 async function refreshAccessToken() {
   const refreshToken = getRefreshToken();
@@ -11,7 +10,7 @@ async function refreshAccessToken() {
     return null;
   }
 
-  const response = await fetch(`${API_URL}/auth/refresh`, {
+  const response = await fetch(`${getApiUrl()}/auth/refresh`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken })
@@ -47,7 +46,7 @@ export async function apiFetch<T = unknown>(path: string, options: RequestInit =
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${getApiUrl()}${path}`, {
     ...options,
     headers
   });

@@ -35,6 +35,8 @@ export function buildApp() {
       }
       cb(new Error("Origin não permitida"), false);
     },
+    methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Authorization", "Content-Type"],
     credentials: true
   });
   app.register(multipart, { limits: { fileSize: 25 * 1024 * 1024 } });

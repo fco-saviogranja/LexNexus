@@ -9,11 +9,18 @@
     "build": "tsc -p tsconfig.json",
     "db:migrate": "prisma migrate dev --schema prisma/schema.prisma",
     "db:seed": "tsx prisma/seed.ts",
-    "generate": "prisma generate --schema prisma/schema.prisma"
+    "generate": "prisma generate --schema prisma/schema.prisma",
+    "import:mindmap": "tsx prisma/import-mind-map.ts",
+    "import:oab": "tsx prisma/import-oab.ts",
+    "import:oab:sample": "tsx prisma/import-oab.ts --max-exams 2",
+    "import:pci": "tsx prisma/import-pci.ts",
+    "import:pci:sample": "tsx prisma/import-pci.ts --category contratos --max-pages 1 --max-exams 3",
+    "import:pci:daily": "tsx prisma/import-pci.ts --daily"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "cheerio": "^1.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
